@@ -5,6 +5,7 @@
 int Is_$_in_the_end = 0;
 int flag_open = 0;
 int Is_number = 0;
+int Is_help = 0;
 
 int getstr(char s[], int lim, FILE *fp)
 {
@@ -32,16 +33,15 @@ void fOutput(FILE *in)
 
 	while ((getstr(line, 1000, in)) != -1) 
 	{
-		if(Is_number == 1)
+		if(Is_number)
 		{
-			int x[4];
 			printf("%i. ",i);
 			i++;
 		}
 
 		printf("%s",line); 
 		
-		if( Is_$_in_the_end == 1)
+		if(Is_$_in_the_end)
 		{
 			printf("$");
 		}
@@ -49,14 +49,16 @@ void fOutput(FILE *in)
 		printf("\n");
 	}
 }
+
 int main(int argc, char *argv[])
 {
-	const char* short_options = "nE";
+	const char* short_options = "nEh";
 
 	const struct option long_options[] = 
 	{
         {"show-ends", no_argument, NULL,'E'},
         {"number", no_argument, NULL,'n'},
+		{"help", no_argument, NULL,'h'},
         {NULL, 0, NULL, 0}
     };
 
@@ -66,7 +68,6 @@ int main(int argc, char *argv[])
 
     while ((rez = getopt_long(argc, argv, short_options, long_options, &option_index)) != -1)
 	{
-    	printf("%c\n", rez);
         switch(rez)
 		{
             case 'E': 
@@ -79,6 +80,11 @@ int main(int argc, char *argv[])
                 Is_number = 1;
                 break;
             }
+			case 'h':
+			{
+				Is_help = 1;
+				break;
+			}
             default: 
             {
                 printf("found unknown option\n");
@@ -88,6 +94,13 @@ int main(int argc, char *argv[])
         option_index = -1;
     }
 
+	if(Is_help)
+	{
+		printf("Options: \n1.Number lines = -n\n2.At the end of the dollar = -E\n");
+	}
+
+	if(argc == 2 && Is_help) return 0;
+	
 	FILE *in;
 	
 	if (argc != 1)
