@@ -5,7 +5,6 @@
 int Is_$_in_the_end = 0;
 int flag_open = 0;
 int Is_number = 0;
-int Is_help = 0;
 
 int getstr(char s[], int lim, FILE *fp)
 {
@@ -52,7 +51,7 @@ void fOutput(FILE *in)
 
 int main(int argc, char *argv[])
 {
-	const char* short_options = "nEh";
+	const char* short_options = "nE";
 
 	const struct option long_options[] = 
 	{
@@ -80,11 +79,6 @@ int main(int argc, char *argv[])
                 Is_number = 1;
                 break;
             }
-			case 'h':
-			{
-				Is_help = 1;
-				break;
-			}
             default: 
             {
                 printf("found unknown option\n");
@@ -94,12 +88,6 @@ int main(int argc, char *argv[])
         option_index = -1;
     }
 
-	if(Is_help)
-	{
-		printf("Options: \n1.Number lines = -n\n2.At the end of the dollar = -E\n");
-	}
-
-	if(argc == 2 && Is_help) return 0;
 	
 	FILE *in;
 	
@@ -115,7 +103,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
-	if (flag_open == 0)
+	if (!flag_open)
 	{
 		in = stdin;
 		fOutput(in);
