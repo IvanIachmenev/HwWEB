@@ -1,38 +1,55 @@
 ﻿using System;
 
-namespace HW_1_6
+namespace SixthApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Введите предложение.");
-            string text = Console.ReadLine() + ' ';
-            string words = "";
-            string endwords = "";
-            int cnt = 0;
-            int space = -1;
-            foreach(var i in text)
-            {
-                words += i;
-                if(words != "" && i == ' ')
-                {
-                    //if(i ==)
-                    //{
-                        endwords += words[words.Length - 2];
-                        cnt++;
-                        words = "";
-                    //}
-                }
+            Console.WriteLine("Введите строку");
+            string s = Console.ReadLine();
 
-                if(i == ' ')
+            string[] textArray = s.Split(' ');
+
+            int countWord = 0;
+
+            for (int i = 0; i < textArray.Length; i++)
+            {
+
+                if (char.IsLetter(textArray[i], 0))
                 {
-                    space++;
+                    countWord++;
                 }
             }
-            int a = text.Length - space - 1;
-            Console.WriteLine($" Количество слов: {cnt}\n Количество символов без проблев {a}" );
-            Console.WriteLine($" Слово из последних символо: {endwords}\n Отношение символов к количеству слов: {(a/cnt)}");
+            Console.WriteLine("кол-во слов: " + countWord);
+
+            int countSymbol = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] != ' ')
+                {
+                    countSymbol++;
+                }
+            }
+
+            Console.WriteLine("кол-во символов: " + countSymbol);
+            Console.WriteLine("Соотношение количество символов без пробелов к количеству слов:" + Math.Round((double)countSymbol / countWord, 2));
+
+            string newWord = "";
+            for (int i = 0; i < textArray.Length; i++)
+            {
+                string buf = textArray[i];
+                if (char.IsLetter(textArray[i], 0))
+                {
+                    int j = 1;
+                    while (!char.IsLetter(buf[buf.Length - j]))
+                    {
+                        j++;
+                    }
+                    newWord = newWord + buf[buf.Length - j];
+                }
+            }
+            Console.WriteLine("кол-во символов: " + newWord);
         }
     }
 }
