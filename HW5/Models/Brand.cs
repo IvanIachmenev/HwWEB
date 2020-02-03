@@ -11,13 +11,10 @@ namespace HW5.Models
         public string Name { get; set; }
         public string Country { get; set; }
 
-        public DateTime CreationDate { get; set; }
-        public TimeSpan LifeTime
+        public List<Water> Waters { get; set; }
+        public Brand()
         {
-            get
-            {
-                return DateTime.Now.Subtract(CreationDate);
-            }
+            Waters = new List<Water>();
         }
     }
 }

@@ -12,58 +12,58 @@ namespace HW5.Controllers
 {
     public class HomeController : Controller
     {
-        List<Brand> brands;
-        List<Water> water;
-        public HomeController()
+        WaterContext db;
+        public HomeController(WaterContext context)
         {
-            Brand Slavda = new Brand { Id = 1, Name = "Slavda", Country = "Russia", CreationDate = DateTime.Now };
-            Brand Swallow = new Brand { Id = 2, Name = "Swallow", Country = "Russia", CreationDate = DateTime.Now };
-            Brand Monastry = new Brand { Id = 3, Name = "Monastry", Country = "Russia", CreationDate = DateTime.Now };
-            brands = new List<Brand> { Slavda, Swallow, Monastry };
-
-            water = new List<Water>
-            {
-                new Water
-                {
-                    Id = 1, Name = "Bottle 0.5L", Count = 10,
-                    Price = 65, Brand = Swallow, Volume = 0.5,
-                    CreationDate = DateTime.Now
-                },
-                new Water
-                {
-                    Id = 2, Name = "Bottle 1L", Count = 20,
-                    Price = 75, Brand = Monastry, Volume = 1,
-                    CreationDate = DateTime.Now
-                },
-                new Water
-                {
-                    Id = 3, Name = "Bottle 19L", Count = 5,
-                    Price = 110, Brand = Slavda, Volume = 19,
-                    CreationDate = DateTime.Now
-                }
-            };
+            db = context;
         }
-
         public IActionResult Index(int? brandId)
         {
             // формируем список компаний для передачи в представление
-            List<BrandModel> brandModels = brands.Select(c => new BrandModel { Id = c.Id, Name = c.Name }).ToList();
+            List<Brand> brandModels = db.Brands.ToList();
             // добавляем на первое место
-            brandModels.Insert(0, new BrandModel { Id = 0, Name = "ALL" });
+            brandModels.Insert(0, new Brand { Id = 0, Name = "All", Country = "no" });
 
-            IndexViewModel ivm = new IndexViewModel { Brands = brandModels, Waters = water };
+            List<Water> _perfumes = db.Waters.ToList();
+            ViewBag.Brands = brandModels;
+            IndexViewModel ivm = new IndexViewModel { Brands = brandModels, Waters = _perfumes };
 
             // если передан id компании, фильтруем список
-            if(brandId != null && brandId > 0)
+            if (brandId != null && brandId > 0)
             {
-                ivm.Waters = water.Where(p => p.Brand.Id == brandId);
+                ivm.Waters = db.Waters.Where(p => p.Brand.Id == brandId);
             }
+
             return View(ivm);
         }
 
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult AddNewBrand()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddNewBrand(string submit, string cancel, Brand brand)
+        {
+            var button = submit ?? cancel;
+            if (button == "Cancel")
+            {
+                return RedirectToAction("AddNewBrand");
+            }
+
+            if (db.Brands.Any(x => x.Name == brand.Name))
+            {
+                return BadRequest();
+            }
+
+            db.Brands.Add(brand);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }

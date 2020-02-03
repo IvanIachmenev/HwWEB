@@ -12,6 +12,8 @@ namespace HW5.Models
         public int Price { get; set; }
         public double Volume { get; set; }
         public int Count { get; set; }
+
+        public int BrandId { get; set; }
         public Brand Brand { get; set; }
 
         public DateTime CreationDate { get; set; }
